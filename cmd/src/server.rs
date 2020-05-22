@@ -349,6 +349,10 @@ impl TiKVServer {
         let mut kv_db_opts = self.config.rocksdb.build_opt();
         kv_db_opts.set_env(env);
         kv_db_opts.add_event_listener(new_compaction_listener(self.router.clone()));
+        let kv_cfs_opts = self.config.rocksdb.build_cf_opts(&block_cache);
+        let db_path = self
+            .store_path
+            .join(Path::new(storage::config::DEFAULT_ROCKSDB_SUB_DIR));
         if !self.config.rocksdb.hdd_store_dir.is_empty() {
             let hdd_path = Path::new(&self.config.rocksdb.hdd_store_dir).to_owned();
             kv_db_opts.set_db_paths(&[
@@ -356,14 +360,10 @@ impl TiKVServer {
                 (hdd_path, std::u64::MAX),
             ]);
         }
-        let kv_cfs_opts = self.config.rocksdb.build_cf_opts(&block_cache);
-        let db_path = self
-            .store_path
-            .join(Path::new(storage::config::DEFAULT_ROCKSDB_SUB_DIR));
         let kv_engine =
             rocks::util::new_engine_opt(db_path.to_str().unwrap(), kv_db_opts, kv_cfs_opts)
                 .unwrap_or_else(|s| fatal!("failed to create kv engine: {}", s));
-        
+
         let engines = engine::Engines::new(
             Arc::new(kv_engine),
             Arc::new(raft_engine),

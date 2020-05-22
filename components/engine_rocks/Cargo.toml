@@ -37,8 +37,9 @@ serde_derive = "1.0"
 coarsetime = "0.1"
 
 [dependencies.rocksdb]
-git = "https://github.com/tikv/rust-rocksdb.git"
+git = "https://github.com/GITHUBear/rust-rocksdb.git"
 package = "rocksdb"
+branch = "hust_cloud"
 features = ["encryption", "static_libcpp"]
 
 [dependencies.prometheus-static-metric]

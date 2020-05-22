@@ -25,8 +25,9 @@ tikv_util = { path = "../tikv_util" }
 time = "0.1"
 
 [dependencies.rocksdb]
-git = "https://github.com/tikv/rust-rocksdb.git"
+git = "https://github.com/GITHUBear/rust-rocksdb.git"
 package = "rocksdb"
+branch = "hust_cloud"
 features = ["static_libcpp"]
 
 [dev-dependencies]

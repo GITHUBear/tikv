@@ -868,6 +868,14 @@ pub fn flush_engine_properties(engine: &DB, name: &str, shared_block_cache: bool
                 .set(block_cache_usage as i64);
         }
 
+        if let Some(path_size_map) = engine.get_map_property_cf(handle, ROCKSDB_PATHS_SIZE) {
+            for i in 0..engine.get_db_options().get_db_paths_num() {
+                STORE_ENGINE_PATH_SIZE_GAUGE_VEC
+                    .with_label_values(&[name, cf, i])
+                    .set(engine.get_property_int_value(&i.to_string()) as i64);
+            }
+        }
+
         // TODO: find a better place to record these metrics.
         // Refer: https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB
         // For index and filter blocks memory
@@ -1036,6 +1044,11 @@ lazy_static! {
         "tikv_engine_size_bytes",
         "Sizes of each column families",
         &["db", "type"]
+    ).unwrap();
+    pub static ref STORE_ENGINE_PATH_SIZE_GAUGE_VEC: IntGaugeVec = register_int_gauge_vec!(
+        "tikv_engine_path_size_bytes",
+        "Sizes of each column families and path",
+        &["db", "type", "path_id"]
     ).unwrap();
     pub static ref STORE_ENGINE_BLOCK_CACHE_USAGE_GAUGE_VEC: IntGaugeVec = register_int_gauge_vec!(
         "tikv_engine_block_cache_size_bytes",

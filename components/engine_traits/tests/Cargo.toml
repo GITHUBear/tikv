@@ -16,3 +16,4 @@ slog-global = { version = "0.1", git = "https://github.com/breeswish/slog-global
 [dev-dependencies.rocksdb]
 path = "/home/shanhaikang/tikv_exp/rust-rocksdb"
 package = "rocksdb"
+branch = "hust_cloud"

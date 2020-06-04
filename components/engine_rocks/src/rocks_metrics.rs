@@ -856,11 +856,6 @@ pub fn flush_engine_properties(engine: &DB, name: &str, shared_block_cache: bool
         let handle = crate::util::get_cf_handle(engine, cf).unwrap();
         // It is important to monitor each cf's size, especially the "raft" and "lock" column
         // families.
-        let cf_used_size = crate::util::get_engine_cf_used_size(engine, handle);
-        STORE_ENGINE_SIZE_GAUGE_VEC
-            .with_label_values(&[name, cf])
-            .set(cf_used_size as i64);
-
         if !shared_block_cache {
             let block_cache_usage = engine.get_block_cache_usage_cf(handle);
             STORE_ENGINE_BLOCK_CACHE_USAGE_GAUGE_VEC
@@ -870,7 +865,7 @@ pub fn flush_engine_properties(engine: &DB, name: &str, shared_block_cache: bool
 
         if let Some(path_size_map) = engine.get_map_property_cf(handle, ROCKSDB_PATHS_SIZE) {
             for i in 0..engine.get_db_options().get_db_paths_num() {
-                STORE_ENGINE_PATH_SIZE_GAUGE_VEC
+                STORE_ENGINE_SIZE_GAUGE_VEC
                     .with_label_values(&[name, cf, &i.to_string()])
                     .set(path_size_map.get_property_int_value(&i.to_string()) as i64);
             }
@@ -1043,11 +1038,6 @@ lazy_static! {
     pub static ref STORE_ENGINE_SIZE_GAUGE_VEC: IntGaugeVec = register_int_gauge_vec!(
         "tikv_engine_size_bytes",
         "Sizes of each column families",
-        &["db", "type"]
-    ).unwrap();
-    pub static ref STORE_ENGINE_PATH_SIZE_GAUGE_VEC: IntGaugeVec = register_int_gauge_vec!(
-        "tikv_engine_path_size_bytes",
-        "Sizes of each column families and path",
         &["db", "type", "path_id"]
     ).unwrap();
     pub static ref STORE_ENGINE_BLOCK_CACHE_USAGE_GAUGE_VEC: IntGaugeVec = register_int_gauge_vec!(

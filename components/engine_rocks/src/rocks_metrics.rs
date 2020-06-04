@@ -871,8 +871,8 @@ pub fn flush_engine_properties(engine: &DB, name: &str, shared_block_cache: bool
         if let Some(path_size_map) = engine.get_map_property_cf(handle, ROCKSDB_PATHS_SIZE) {
             for i in 0..engine.get_db_options().get_db_paths_num() {
                 STORE_ENGINE_PATH_SIZE_GAUGE_VEC
-                    .with_label_values(&[name, cf, i])
-                    .set(engine.get_property_int_value(&i.to_string()) as i64);
+                    .with_label_values(&[name, cf, &i.to_string()])
+                    .set(path_size_map.get_property_int_value(&i.to_string()) as i64);
             }
         }
 

@@ -3,6 +3,7 @@
 use rocksdb::{DBStatisticsHistogramType as HistType, DBStatisticsTickerType as TickerType};
 
 pub const ROCKSDB_TOTAL_SST_FILES_SIZE: &str = "rocksdb.total-sst-files-size";
+pub const ROCKSDB_PATHS_SIZE: &str = "rocksdb.paths-size";
 pub const ROCKSDB_TABLE_READERS_MEM: &str = "rocksdb.estimate-table-readers-mem";
 pub const ROCKSDB_CUR_SIZE_ALL_MEM_TABLES: &str = "rocksdb.cur-size-all-mem-tables";
 pub const ROCKSDB_ESTIMATE_NUM_KEYS: &str = "rocksdb.estimate-num-keys";

@@ -868,16 +868,14 @@ pub fn flush_engine_properties(engine: &DB, name: &str, shared_block_cache: bool
                 .set(block_cache_usage as i64);
         }
 
-        info!("============== PATHS_SIZE_PROPERTY ==========");
-        if let Some(path_size_map) = engine.get_map_property_cf(handle, ROCKSDB_PATHS_SIZE) {
+        
+	if let Some(path_size_map) = engine.get_map_property_cf(handle, ROCKSDB_PATHS_SIZE) {
             for i in 0..engine.get_db_options().get_db_paths_num() {
-                info!("path {} : {}", i, path_size_map.get_property_int_value(&i.to_string()));
                 STORE_ENGINE_PATH_SIZE_GAUGE_VEC
                     .with_label_values(&[name, cf, &i.to_string()])
                     .set(path_size_map.get_property_int_value(&i.to_string()) as i64);
             }
         }
-        info!("=============================================");
 
         // TODO: find a better place to record these metrics.
         // Refer: https://github.com/facebook/rocksdb/wiki/Memory-usage-in-RocksDB

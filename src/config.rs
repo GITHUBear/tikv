@@ -808,8 +808,6 @@ pub struct DbConfig {
     pub wal_size_limit: ReadableSize,
     pub ssd_store_size: ReadableSize,
     pub hdd_store_dir: String,
-    pub capacity_warn_rate: f64,
-    pub capacity_danger_rate: f64,
     pub max_total_wal_size: ReadableSize,
     pub max_background_jobs: i32,
     #[config(skip)]
@@ -877,8 +875,6 @@ impl Default for DbConfig {
             wal_size_limit: ReadableSize::kb(0),
             ssd_store_size: ReadableSize::gb(0),
             hdd_store_dir: "".to_owned(),
-            capacity_warn_rate: 0.9,
-            capacity_danger_rate: 0.95,
             max_total_wal_size: ReadableSize::gb(4),
             max_background_jobs,
             max_manifest_file_size: ReadableSize::mb(128),
@@ -921,8 +917,6 @@ impl DbConfig {
         }
         opts.set_wal_ttl_seconds(self.wal_ttl_seconds);
         opts.set_wal_size_limit_mb(self.wal_size_limit.as_mb());
-        opts.set_capacity_warn_rate(self.capacity_warn_rate);
-        opts.set_capacity_danger_rate(self.capacity_danger_rate);
         opts.set_max_total_wal_size(self.max_total_wal_size.0);
         opts.set_max_background_jobs(self.max_background_jobs);
         opts.set_max_manifest_file_size(self.max_manifest_file_size.0);
